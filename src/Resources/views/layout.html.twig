@@ -1,0 +1,80 @@
+{% trans_default_domain 'LexikTranslationBundle' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>{% block lexik_title '' %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ preload(asset('bundles/forcilexiktranslationui/css/fontawesome-all.min.css'), { as: 'style' }) }}"/>
+            <link rel="stylesheet" href="{{ asset('bundles/forcilexiktranslationui/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/forcilexiktranslationui/css/style.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+    <script>
+        var config = {
+                defaultLocale: '{{ defaultLocale }}',
+                locales: {{ locales | json_encode | raw }},
+                domains: {{ domains | json_encode | raw }},
+                inputType: '{{ inputType }}',
+                transUnitToken: '{{ form.children._token.vars.value }}',
+                recordsPerPage: 20,
+                urls:
+                    {
+                        overviewData: '{{ path('forci_lexik_translation_ui_overview_data') }}',
+                        invalidateCache: '{{ path('forci_lexik_translation_ui_invalidate_cache') }}',
+                        list: '{{ path('forci_lexik_translation_ui_list') }}',
+                        create: '{{ path('forci_lexik_translation_ui_create') }}',
+                        update: '{{ path('forci_lexik_translation_ui_update', {'id': '-id-'}) }}',
+                        delete: '{{ path('forci_lexik_translation_ui_delete', {'id': '-id-'}) }}'
+                    }
+                ,
+                labels: {
+                    hideCol: '{{ 'translations.show_hide_columns'|trans }}',
+                    invalidateCache: '{{ 'translations.invalidate_cache'|trans }}',
+                    allTranslations: '{{ 'translations.all_translations'|trans }}',
+                    error: '{{ 'translations.error'|trans({}, 'ForciLexikTranslationUIBundle') }}',
+                    profiler: '{{ 'translations.profiler'|trans }}',
+                    {#dataSource: '{{ 'translations.data_source'|trans }}',#}
+                    latestProfiles: '{{ 'translations.latest_profiles'|trans }}',
+                    profile: '{{ 'translations.profile'|trans }}',
+                    {#saveRow: '{{ 'translations.save_row'|trans }}',#}
+                    domain: '{{ 'translations.domain'|trans }}',
+                    overviewDomain: '{{ 'overview.domain'|trans }}',
+                    key: '{{ 'translations.key'|trans }}',
+                    save: '{{ 'translations.save'|trans }}',
+                    saveAdd: '{{ 'translations.save_add'|trans }}',
+                    createSuccess: '{{ 'translations.successfully_created'|trans({}, 'ForciLexikTranslationUIBundle') }}',
+                    updateSuccess: '{{ 'translations.successfully_updated'|trans({}, 'ForciLexikTranslationUIBundle') }}',
+                    doubleClickToEdit: '{{ 'translations.double_click_to_edit'|trans({}, 'ForciLexikTranslationUIBundle') }}',
+                    {#updateSuccess: '{{ 'translations.successfully_updated'|trans }}',#}
+                    {#updateFail: '{{ 'translations.update_failed'|trans }}',#}
+                    {#deleteSuccess: '{{ 'translations.successfully_deleted'|trans }}',#}
+                    {#deleteFail: '{{ 'translations.delete_failed'|trans }}',#}
+                    {#noTranslations: '{{ 'translations.no_translations'|trans }}',#}
+                    pageTitle: '{{ 'translations.page_title'|trans }}',
+                    addTranslation: '{{ 'translations.add_translation'|trans }}',
+                    newTranslation: '{{ 'translations.new_translation'|trans }}',
+                    pageTitleOverview: '{{ 'overview.page_title'|trans }}',
+                    backToList: '{{ 'translations.back_to_list'|trans }}',
+                    showGrid: '{{ 'overview.show_grid'|trans }}',
+                    latestTranslation: '{{ 'overview.msg_latest_translation'|trans }}',
+                    overviewNoStats: '{{ 'overview.no_stats'|trans }}',
+                    toggleAllColumns: '{{ 'translations.toggle_all_columns'|trans }}',
+                    allDone: '{{ 'translations.all_done'|trans({}, 'ForciLexikTranslationUIBundle') }}',
+                }
+            }
+        ;
+    </script>
+
+    <div id="app">
+        <index/>
+    </div>
+
+    <script src="{{ preload(asset('vendor.js', 'forci_lexik_translation_ui'), {as: 'script'}) }}"></script>
+    <script src="{{ preload(asset('app.js', 'forci_lexik_translation_ui'), {as: 'script'}) }}"></script>
+
+    {#<script src="{{ asset('') }}"></script>#}
+    {#<script src="{{ asset('bundles/forcilexiktranslationui/build/app.js') }}"></script>#}
+    </body>
+</html>

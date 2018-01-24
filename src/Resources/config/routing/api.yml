@@ -1,0 +1,24 @@
+forci_lexik_translation_ui_list:
+    path:     /translations
+    defaults: { _controller: ForciLexikTranslationUIBundle:Rest:list }
+    methods:  [GET]
+
+forci_lexik_translation_ui_profiler:
+    path:     /translations/profiler/{token}
+    defaults: { _controller: ForciLexikTranslationUIBundle:Rest:listByProfile }
+    methods:  [GET]
+
+forci_lexik_translation_ui_update:
+    path:     /translations/{id}
+    defaults: { _controller: ForciLexikTranslationUIBundle:Rest:update }
+    methods:  [PUT]
+
+forci_lexik_translation_ui_delete_locale:
+    path:     /translations/{id}/{locale}
+    defaults: { _controller: ForciLexikTranslationUIBundle:Rest:deleteTranslation }
+    methods:  [DELETE]
+
+forci_lexik_translation_ui_delete:
+    path:     /translations/{id}
+    defaults: { _controller: ForciLexikTranslationUIBundle:Rest:delete }
+    methods:  [DELETE]

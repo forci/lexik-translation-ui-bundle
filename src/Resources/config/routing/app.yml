@@ -1,0 +1,19 @@
+forci_lexik_translation_ui_index:
+    path:     /
+    defaults: { _controller: ForciLexikTranslationUIBundle:Translation:index }
+    methods:  [GET]
+
+forci_lexik_translation_ui_overview_data:
+    path:     /overview
+    defaults: { _controller: ForciLexikTranslationUIBundle:Translation:overviewData }
+    methods:  [GET]
+
+forci_lexik_translation_ui_create:
+    path:     /create
+    defaults: { _controller: ForciLexikTranslationUIBundle:Translation:create }
+    methods:  [GET, POST]
+
+forci_lexik_translation_ui_invalidate_cache:
+    path:     /invalidate-cache
+    defaults: { _controller: ForciLexikTranslationUIBundle:Translation:invalidateCache }
+    methods:  [GET]

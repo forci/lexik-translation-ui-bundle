@@ -1,0 +1,6 @@
+forci_lexik_translation_ui_app:
+    resource: "@ForciLexikTranslationUIBundle/Resources/config/routing/app.yml"
+
+forci_lexik_translation_ui_api:
+    resource: "@ForciLexikTranslationUIBundle/Resources/config/routing/api.yml"
+    prefix: /api
