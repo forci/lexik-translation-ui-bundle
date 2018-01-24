@@ -11,3 +11,11 @@ framework:
             forci_lexik_translation_ui:
                 json_manifest_path: "%kernel.root_dir%/../web/bundles/forcilexiktranslationui/build/manifest.json"
 ```
+
+Then, make a link somewhere in your app to
+
+```twig
+<a href="{{ path('forci_lexik_translation_ui_index') }}">
+    Translations
+</a>
+```
