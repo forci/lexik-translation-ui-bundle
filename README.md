@@ -19,3 +19,7 @@ Then, make a link somewhere in your app to
     Translations
 </a>
 ```
+
+# TODO
+- favicon
+- logo
