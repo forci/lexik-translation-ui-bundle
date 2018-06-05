@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface {
 
     public function getConfigTreeBuilder() {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('forci_lexik_ui');
+        $rootNode = $treeBuilder->root('forci_lexik_translation_ui');
 
         $rootNode
             ->children()
