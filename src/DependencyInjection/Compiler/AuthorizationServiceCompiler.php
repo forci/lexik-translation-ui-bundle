@@ -36,7 +36,7 @@ class AuthorizationServiceCompiler implements CompilerPassInterface {
 
         $definition = $container->getDefinition($serviceId);
 
-        if (!is_a($definition->getClass(), TranslationAuthorizationCheckerInterface::class)) {
+        if (!is_subclass_of($definition->getClass(), TranslationAuthorizationCheckerInterface::class)) {
             throw new \RuntimeException(sprintf(
                 'Translatipon Authorization Checker must implement %s',
                 TranslationAuthorizationCheckerInterface::class
