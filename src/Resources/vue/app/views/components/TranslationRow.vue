@@ -15,7 +15,9 @@
                 </button>
             </div>
         </td>
-        <td class="grid-elipsis" v-for="locale in locales" v-show="columnVisible(locale)" @dblclick="editField(locale)"
+        <td class="grid-elipsis" v-for="locale in locales" v-show="columnVisible(locale)"
+            @dblclick="editField(locale)"
+            @keydown.esc="setMode('read')"
             :title="translatableTitle(locale)">
             <span v-if="mode !== 'edit' || !canEditLocale(locale)" v-text="translation[locale]">{{ translation[locale] }}</span>
             <input type="text"
@@ -131,6 +133,9 @@
             editField(locale) {
                 this.setDefaultLocale(locale);
                 this.setMode('edit');
+                this.$nextTick(() => {
+                    this.focusField();
+                });
             },
             translatableTitle(locale, event) {
                 return this.labels.doubleClickToEdit + ' translation in ' + locale;
