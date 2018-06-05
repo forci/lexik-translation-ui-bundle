@@ -11,18 +11,14 @@
         <h3>{{ labels.pageTitleOverview }}</h3>
         <hr/>
         <p v-if="dataLoaded" v-text="latestTranslationMessage"></p>
-        <div id="translation-overview">
-            <div class="row margin-row">
-                <div class="col-md-12">
-                    <overview-table
-                        :locales="locales"
-                        :labels="labels"
-                        :overviewData="overviewData"
-                        v-if="dataLoaded">
-                    </overview-table>
-                    <div class="alert alert-info" v-else>{{ labels.overviewNoStats }}</div>
-                </div>
-            </div>
+        <div id="translation-overview" class="table-responsive">
+            <overview-table
+                    :locales="locales"
+                    :labels="labels"
+                    :overviewData="overviewData"
+                    v-if="dataLoaded">
+            </overview-table>
+            <div class="alert alert-info" v-else>{{ labels.overviewNoStats }}</div>
         </div>
     </div>
 

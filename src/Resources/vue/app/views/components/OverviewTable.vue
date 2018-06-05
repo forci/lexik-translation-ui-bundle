@@ -1,6 +1,6 @@
 <template>
 
-    <table class="table table-bordered table-striped table-overview">
+    <table class="table table-bordered table-striped table-overview table-sm">
         <thead>
         <tr>
             <th>
