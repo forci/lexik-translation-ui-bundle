@@ -21,13 +21,14 @@ use Lexik\Bundle\TranslationBundle\Manager\LocaleManager;
 use Lexik\Bundle\TranslationBundle\Storage\StorageInterface;
 use Lexik\Bundle\TranslationBundle\Translation\Translator;
 use Lexik\Bundle\TranslationBundle\Util\Overview\StatsAggregator;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class TranslationController extends Controller {
+class TranslationController extends AbstractController {
 
     /** @var TransUnitFormHandler */
     protected $formHandler;
@@ -50,6 +51,9 @@ class TranslationController extends Controller {
     /** @var TranslationAuthorizationCheckerInterface */
     protected $authorizationChecker;
 
+    /** @var FormFactory */
+    protected $formFactory;
+
     /** @var string */
     protected $defaultLocale;
 
@@ -59,7 +63,7 @@ class TranslationController extends Controller {
     public function __construct(
         TransUnitFormHandler $formHandler, LocaleManager $localeManager, StorageInterface $storage,
         StatsAggregator $statsAggregator, TranslatorInterface $translator, Translator $lexikTranslator,
-        TranslationAuthorizationCheckerInterface $authorizationChecker,
+        TranslationAuthorizationCheckerInterface $authorizationChecker, FormFactory $formFactory,
         string $defaultLocale, string $inputType
     ) {
         $this->formHandler = $formHandler;
@@ -69,13 +73,14 @@ class TranslationController extends Controller {
         $this->translator = $translator;
         $this->lexikTranslator = $lexikTranslator;
         $this->authorizationChecker = $authorizationChecker;
+        $this->formFactory = $formFactory;
         $this->defaultLocale = $defaultLocale;
         $this->inputType = $inputType;
     }
 
     public function indexAction() {
         // get form for csrf token
-        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
+        $form = $this->formFactory->create(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
 
         $locales = $this->localeManager->getLocales();
 
@@ -105,7 +110,7 @@ class TranslationController extends Controller {
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
+        $form = $this->formFactory->create(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
 
         try {
             if (!$this->formHandler->process($form, $request)) {
