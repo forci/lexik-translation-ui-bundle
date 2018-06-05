@@ -14,12 +14,52 @@
 
 namespace Forci\Bundle\LexikTranslationUIBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Forci\Bundle\LexikTranslationUIBundle\Authorization\TranslationAuthorizationCheckerInterface;
+use Lexik\Bundle\TranslationBundle\Manager\LocaleManager;
+use Lexik\Bundle\TranslationBundle\Manager\TransUnitInterface;
+use Lexik\Bundle\TranslationBundle\Manager\TransUnitManager;
+use Lexik\Bundle\TranslationBundle\Document\TransUnit as TransUnitDocument;
+use Lexik\Bundle\TranslationBundle\Util\DataGrid\DataGridRequestHandler;
+use Lexik\Bundle\TranslationBundle\Util\DataGrid\DataGridFormatter;
+use Lexik\Bundle\TranslationBundle\Storage\StorageInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class RestController extends Controller {
+class RestController extends AbstractController {
+
+    /** @var DataGridRequestHandler */
+    protected $requestHandler;
+
+    /** @var DataGridFormatter */
+    protected $gridFormatter;
+
+    /** @var StorageInterface */
+    protected $storage;
+
+    /** @var TransUnitManager */
+    protected $transUnitManager;
+
+    /** @var LocaleManager */
+    protected $localeManager;
+
+    /** @var TranslationAuthorizationCheckerInterface */
+    protected $authorizationChecker;
+
+    public function __construct(
+        DataGridRequestHandler $requestHandler, DataGridFormatter $gridFormatter, StorageInterface $storage,
+        TransUnitManager $transUnitManager, LocaleManager $localeManager,
+        TranslationAuthorizationCheckerInterface $authorizationChecker
+    ) {
+        $this->requestHandler = $requestHandler;
+        $this->gridFormatter = $gridFormatter;
+        $this->storage = $storage;
+        $this->transUnitManager = $transUnitManager;
+        $this->localeManager = $localeManager;
+        $this->authorizationChecker = $authorizationChecker;
+    }
 
     /**
      * @param Request $request
@@ -27,9 +67,9 @@ class RestController extends Controller {
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function listAction(Request $request) {
-        list($transUnits, $count) = $this->get('lexik_translation.data_grid.request_handler')->getPage($request);
+        list($transUnits, $count) = $this->requestHandler->getPage($request);
 
-        return $this->get('lexik_translation.data_grid.formatter')->createListResponse($transUnits, $count);
+        return $this->gridFormatter->createListResponse($transUnits, $count);
     }
 
     /**
@@ -39,9 +79,9 @@ class RestController extends Controller {
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function listByProfileAction(Request $request, $token) {
-        list($transUnits, $count) = $this->get('lexik_translation.data_grid.request_handler')->getPageByToken($request, $token);
+        list($transUnits, $count) = $this->requestHandler->getPageByToken($request, $token);
 
-        return $this->get('lexik_translation.data_grid.formatter')->createListResponse($transUnits, $count);
+        return $this->gridFormatter->createListResponse($transUnits, $count);
     }
 
     /**
@@ -53,9 +93,33 @@ class RestController extends Controller {
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function updateAction(Request $request, $id) {
-        $transUnit = $this->get('lexik_translation.data_grid.request_handler')->updateFromRequest($id, $request);
+//        $transUnit = $this->requestHandler->updateFromRequest($id, $request);
 
-        return $this->get('lexik_translation.data_grid.formatter')->createSingleResponse($transUnit);
+        /** @var TransUnitInterface $transUnit */
+        $transUnit = $this->storage->getTransUnitById($id);
+
+        if (!$transUnit) {
+            throw new NotFoundHttpException(sprintf('No TransUnit found for "%s"', $id));
+        }
+
+        $translationsContent = [];
+        foreach ($this->localeManager->getLocales() as $locale) {
+            if ($this->authorizationChecker->canEditLocale($locale)) {
+                $translationsContent[$locale] = $request->request->get($locale);
+            }
+        }
+
+        $this->transUnitManager->updateTranslationsContent($transUnit, $translationsContent);
+
+        if ($transUnit instanceof TransUnitDocument) {
+            $transUnit->convertMongoTimestamp();
+        }
+
+        $this->storage->flush();
+
+//        return $transUnit;
+
+        return $this->gridFormatter->createSingleResponse($transUnit);
     }
 
     /**
@@ -66,19 +130,26 @@ class RestController extends Controller {
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function deleteAction($id) {
-        if (!$this->isGranted('ROLE_TRANSLATOR_DELETE')) {
-            return $this->json([
-                'message' => 'You are not allowed to perform this action'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+//        if (!$this->isGranted('ROLE_TRANSLATOR_DELETE')) {
+//            return $this->json([
+//                'message' => 'You are not allowed to perform this action'
+//            ], Response::HTTP_UNAUTHORIZED);
+//        }
 
-        $transUnit = $this->get('lexik_translation.translation_storage')->getTransUnitById($id);
+        /** @var TransUnitInterface $transUnit */
+        $transUnit = $this->storage->getTransUnitById($id);
 
         if (!$transUnit) {
             throw $this->createNotFoundException(sprintf('No TransUnit found for id "%s".', $id));
         }
 
-        $deleted = $this->get('lexik_translation.trans_unit.manager')->delete($transUnit);
+        if (!$this->authorizationChecker->canDelete($transUnit)) {
+            return $this->json([
+                'message' => 'You are not allowed to perform this action'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $deleted = $this->transUnitManager->delete($transUnit);
 
         return new JsonResponse(['deleted' => $deleted], $deleted ? 200 : 400);
     }
@@ -92,19 +163,26 @@ class RestController extends Controller {
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function deleteTranslationAction($id, $locale) {
-        if (!$this->isGranted('ROLE_TRANSLATOR_DELETE')) {
-            return $this->json([
-                'message' => 'You are not allowed to perform this action'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+//        if (!$this->isGranted('ROLE_TRANSLATOR_DELETE')) {
+//            return $this->json([
+//                'message' => 'You are not allowed to perform this action'
+//            ], Response::HTTP_UNAUTHORIZED);
+//        }
 
-        $transUnit = $this->get('lexik_translation.translation_storage')->getTransUnitById($id);
+        /** @var TransUnitInterface $transUnit */
+        $transUnit = $this->storage->getTransUnitById($id);
 
         if (!$transUnit) {
             throw $this->createNotFoundException(sprintf('No TransUnit found for id "%s".', $id));
         }
 
-        $deleted = $this->get('lexik_translation.trans_unit.manager')->deleteTranslation($transUnit, $locale);
+        if (!$this->authorizationChecker->canDeleteTranslation($transUnit, $locale)) {
+            return $this->json([
+                'message' => 'You are not allowed to perform this action'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $deleted = $this->transUnitManager->deleteTranslation($transUnit, $locale);
 
         return new JsonResponse(['deleted' => $deleted], $deleted ? 200 : 400);
     }

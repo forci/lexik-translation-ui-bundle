@@ -2,60 +2,8 @@
 
     <div>
         <notifications group="translation-grid"/>
-        <!--<div class="page-header">-->
-        <!--<h1>-->
-        <!--{{ labels.pageTitle }}-->
-        <!--<div class="pull-right">-->
-        <!--<router-link to="/new" class="btn btn-success">-->
-        <!--<span class="glyphicon glyphicon-plus"></span>-->
-        <!--{{ labels.newTranslation }}-->
-        <!--</router-link>-->
-        <!--<router-link to="/overview" class="btn btn-primary">-->
-        <!--<span class="glyphicon glyphicon-tasks"></span>-->
-        <!--{{ labels.pageTitleOverview }}-->
-        <!--</router-link>-->
-        <!--</div>-->
-        <!--</h1>-->
-        <!--</div>-->
 
         <div id="translation-grid">
-            <!--<div>-->
-            <!--<div class="row">-->
-            <!--<div class="col-md-2">-->
-            <!--<label>translations.data_source:&nbsp;</label>-->
-            <!--<div class="btn-group" role="group">-->
-            <!--<button type="button" class="btn" :class="profilerOn ? 'btn-default' : 'btn-info'" @click="profilerOn=false">-->
-            <!--{{ labels.allTranslations }}-->
-            <!--</button>-->
-            <!--<button type="button" class="btn" :class="profilerOn ? 'btn-info' : 'btn-default'" @click="profilerOn=true">-->
-            <!--{{ labels.profiler }}-->
-            <!--</button>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="col-md-5" v-if="profilerOn">-->
-            <!--<label>{{ labels.latestProfiles }}:&nbsp;</label>-->
-            <!--<select class="form-control">-->
-            <!--<option value="" selected="selected"></option>-->
-            <!--</select>-->
-            <!--</div>-->
-            <!--<div class="col-md-2" v-if="profilerOn">-->
-            <!--<label>{{ labels.profile }}:&nbsp;</label>-->
-            <!--<input type="text" class="form-control">-->
-            <!--</div>-->
-            <!--</div>-->
-
-            <!--<hr>-->
-            <!--</div>-->
-
-
-            <!--<div class="row margin-row grid-action-bar">-->
-            <!--<div class="col-md-12">-->
-            <!--<a class="btn btn-default btn-sm btn-manage-col" @click="toggleShowHideColumns">-->
-            <!--<span class="glyphicon glyphicon-eye-close"></span>-->
-            <!--{{ labels.hideCol }}-->
-            <!--</a>-->
-            <!--</div>-->
-            <!--</div>-->
 
             <div class="row">
                 <div class="col-md-12">
@@ -74,7 +22,8 @@
                         </li>
                         <li class="locale">
                             <label for="toggle-domain">
-                                <input type="checkbox" id="toggle-domain" v-model="showHide.domain" @change="updateShowAll">
+                                <input type="checkbox" id="toggle-domain" v-model="showHide.domain"
+                                       @change="updateShowAll">
                                 {{ labels.domain }}
                             </label>
                         </li>
@@ -111,7 +60,8 @@
                               :next-class="'page-item'"
                               :next-link-class="'page-link'">
                     </paginate>
-                    <translation-table :locales="locales"
+                    <translation-table :ref="'translation-table'"
+                                       :locales="locales"
                                        :labels="labels"
                                        :page="currentPage"
                                        :columns="showHide"
@@ -168,7 +118,11 @@
             Paginate
         },
         mounted() {
-            this.$store.dispatch('loadTranslations');
+            this.$store.dispatch('loadTranslations').then(() => {
+                this.$nextTick(() => {
+                    this.$refs['translation-table'].focusCurrentRow();
+                })
+            });
         },
         methods: {
             toggleShowAll() {
@@ -195,11 +149,11 @@
             initShowHide() {
                 let dynamicProps = {};
                 for (let i = 0; i < config.locales.length; i++) {
-                    dynamicProps[config.locales[i]] = true;
+                    dynamicProps[config.locales[i]] = config.locales[i] == config.defaultLocale;
                 }
 
                 let staticProps = {
-                    id: true,
+                    id: false,
                     domain: true,
                     key: true
                 };

@@ -1,0 +1,31 @@
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\RestController">
+            <argument type="service" id="lexik_translation.data_grid.request_handler"/>
+            <argument type="service" id="lexik_translation.data_grid.formatter"/>
+            <argument type="service" id="lexik_translation.translation_storage"/>
+            <argument type="service" id="lexik_translation.trans_unit.manager"/>
+            <argument type="service" id="lexik_translation.locale.manager"/>
+            <argument type="service" id="forci_lexik_translation.translation_authorization_checker"/>
+        </service>
+
+        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController">
+            <argument type="service" id="lexik_translation.form.handler.trans_unit"/>
+            <argument type="service" id="lexik_translation.locale.manager"/>
+            <argument type="service" id="lexik_translation.translation_storage"/>
+            <argument type="service" id="lexik_translation.overview.stats_aggregator"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="lexik_translation.translator"/>
+            <argument type="service" id="forci_lexik_translation.translation_authorization_checker"/>
+            <argument>%kernel.default_locale%</argument>
+            <argument>%lexik_translation.grid_input_type%</argument>
+        </service>
+
+        <service id="forci_lexik_translation.translation_authorization_checker" class="Forci\Bundle\LexikTranslationUIBundle\Authorization\FreeAuthorizationChecker"/>
+
+    </services>
+
+</container>

@@ -14,8 +14,15 @@
 
 namespace Forci\Bundle\LexikTranslationUIBundle;
 
+use Forci\Bundle\LexikTranslationUIBundle\DependencyInjection\Compiler\AuthorizationServiceCompiler;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class ForciLexikTranslationUIBundle extends Bundle {
 
+    public function build(ContainerBuilder $container) {
+        parent::build($container);
+
+        $container->addCompilerPass(new AuthorizationServiceCompiler());
+    }
 }

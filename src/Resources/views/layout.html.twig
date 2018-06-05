@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>{% block lexik_title '' %}</title>
+        <title>{% block lexik_title 'Translation' %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ preload(asset('bundles/forcilexiktranslationui/css/fontawesome-all.min.css'), { as: 'style' }) }}"/>
             <link rel="stylesheet" href="{{ asset('bundles/forcilexiktranslationui/css/bootstrap.min.css') }}">
@@ -15,10 +15,12 @@
             var config = {
                     defaultLocale: '{{ defaultLocale }}',
                     locales: {{ locales | json_encode | raw }},
+                    editableLocales: {{ editableLocales | json_encode | raw }},
                     domains: {{ domains | json_encode | raw }},
                     inputType: '{{ inputType }}',
                     transUnitToken: '{{ form.children._token.vars.value }}',
                     recordsPerPage: 20,
+                    canCreate: {{ canCreate | json_encode | raw }},
                     urls:
                         {
                             overviewData: '{{ path('forci_lexik_translation_ui_overview_data') }}',

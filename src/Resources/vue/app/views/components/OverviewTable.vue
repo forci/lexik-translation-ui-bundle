@@ -6,29 +6,29 @@
             <th>
                 {{ labels.overviewDomain }}
             </th>
-            <template v-for="locale in locales">
+            <template v-for="locale in overviewData.locales">
                 <th>
                     {{ locale }}
                 </th>
             </template>
         </tr>
         </thead>
-        <tbody v-for="domain in overviewData.domains">
+        <tbody v-for="(stats, domain) in overviewData.stats">
         <tr>
             <td>{{ domain }}</td>
-            <template v-for="locale in locales">
+            <template v-for="(stat, locale) in stats">
                 <td class="text-center">
-                <span class="text" :class="[overviewData.stats[domain][locale].completed == 100 ? 'text-success' : 'text-danger']">
-                   {{ overviewData.stats[domain][locale].translated }} / {{ overviewData.stats[domain][locale].keys }}
-                </span>
+                    <span class="text" :class="stat.completed == 100 ? 'text-success' : 'text-danger'">
+                       {{ stat.translated }} / {{ stat.keys }}
+                    </span>
                     <div class="progress">
                         <div class="progress-bar"
-                             :class="[overviewData.stats[domain][locale].completed == 100 ? 'progress-bar-success' : 'progress-bar-danger']"
+                             :class="stat.completed == 100 ? 'progress-bar-success' : 'progress-bar-danger'"
                              role="progressbar"
-                             :aria-valuenow="overviewData.stats[domain][locale].completed"
+                             :aria-valuenow="stat.completed"
                              aria-valuemin="0"
                              :aria-valuemax="100"
-                             :style="{width: overviewData.stats[domain][locale].completed + '%'}">
+                             :style="{width: stat.completed + '%'}">
                         </div>
                     </div>
                 </td>

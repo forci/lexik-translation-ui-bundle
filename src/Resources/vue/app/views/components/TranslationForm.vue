@@ -67,20 +67,11 @@
 
 <script>
 
-    //    import {Validator} from 'vee-validate';
-
     export default {
         props: ['domains', 'locales', 'labels', 'defaultLocale', 'transUnitToken'],
-//        validator: null,
         data() {
             return this.initialState();
         },
-//        created() {
-//            this.validator = new Validator({
-//                key: 'required'
-//            });
-//            this.$set(this, 'errors', this.validator.errors);
-//        },
         methods: {
             initialState() {
                 let translations = [];

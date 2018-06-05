@@ -13,7 +13,7 @@
                         <i class="fas fa-th"></i>
                         {{ labels.showGrid }}
                     </router-link>
-                    <router-link to="/new" class="blog-nav-item">
+                    <router-link to="/new" class="blog-nav-item" v-if="canCreate">
                         <i class="fas fa-plus"></i>
                         {{ labels.addTranslation }}
                     </router-link>
@@ -41,7 +41,8 @@
                 labels: config.labels,
                 transUnitToken: config.transUnitToken,
                 domains: config.domains,
-                defaultLocale: config.defaultLocale
+                defaultLocale: config.defaultLocale,
+                canCreate: config.canCreate
             };
         },
         methods: {

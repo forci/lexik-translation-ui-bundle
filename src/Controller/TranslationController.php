@@ -14,36 +14,101 @@
 
 namespace Forci\Bundle\LexikTranslationUIBundle\Controller;
 
+use Forci\Bundle\LexikTranslationUIBundle\Authorization\TranslationAuthorizationCheckerInterface;
+use Lexik\Bundle\TranslationBundle\Form\Handler\TransUnitFormHandler;
+use Lexik\Bundle\TranslationBundle\Form\Type\TransUnitType;
+use Lexik\Bundle\TranslationBundle\Manager\LocaleManager;
 use Lexik\Bundle\TranslationBundle\Storage\StorageInterface;
+use Lexik\Bundle\TranslationBundle\Translation\Translator;
+use Lexik\Bundle\TranslationBundle\Util\Overview\StatsAggregator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslationController extends Controller {
 
-    public function indexAction() {
-        $handler = $this->get('lexik_translation.form.handler.trans_unit');
-        $localeManager = $this->get('lexik_translation.locale.manager');
+    /** @var TransUnitFormHandler */
+    protected $formHandler;
 
+    /** @var LocaleManager */
+    protected $localeManager;
+
+    /** @var StorageInterface */
+    protected $storage;
+
+    /** @var StatsAggregator */
+    protected $statsAggregator;
+
+    /** @var TranslatorInterface */
+    protected $translator;
+
+    /** @var Translator */
+    protected $lexikTranslator;
+
+    /** @var TranslationAuthorizationCheckerInterface */
+    protected $authorizationChecker;
+
+    /** @var string */
+    protected $defaultLocale;
+
+    /** @var string */
+    protected $inputType;
+
+    public function __construct(
+        TransUnitFormHandler $formHandler, LocaleManager $localeManager, StorageInterface $storage,
+        StatsAggregator $statsAggregator, TranslatorInterface $translator, Translator $lexikTranslator,
+        TranslationAuthorizationCheckerInterface $authorizationChecker,
+        string $defaultLocale, string $inputType
+    ) {
+        $this->formHandler = $formHandler;
+        $this->localeManager = $localeManager;
+        $this->storage = $storage;
+        $this->statsAggregator = $statsAggregator;
+        $this->translator = $translator;
+        $this->lexikTranslator = $lexikTranslator;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->defaultLocale = $defaultLocale;
+        $this->inputType = $inputType;
+    }
+
+    public function indexAction() {
         // get form for csrf token
-        $form = $this->createForm('Lexik\Bundle\TranslationBundle\Form\Type\TransUnitType', $handler->createFormData(), $handler->getFormOptions());
+        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
+
+        $locales = $this->localeManager->getLocales();
+
+        $editableLocales = [];
+
+        foreach ($locales as $locale) {
+            if ($this->authorizationChecker->canEditLocale($locale)) {
+                $editableLocales[] = $locale;
+            }
+        }
 
         return $this->render('@ForciLexikTranslationUI/layout.html.twig', [
-            'locales' => $localeManager->getLocales(),
-            'defaultLocale' => $this->getParameter('kernel.default_locale'),
-            'domains' => array_unique(array_merge(['messages'], $handler->getFormOptions()['domains'])),
-            'inputType' => $this->getParameter('lexik_translation.grid_input_type'),
+            'locales' => $locales,
+            'editableLocales' => $editableLocales,
+            'defaultLocale' => $this->defaultLocale,
+            'domains' => array_unique(array_merge(['messages'], $this->formHandler->getFormOptions()['domains'])),
+            'inputType' => $this->inputType,
             'form' => $form->createView(),
+            'canCreate' => $this->authorizationChecker->canCreate()
         ]);
     }
 
     public function createAction(Request $request) {
-        $handler = $this->get('lexik_translation.form.handler.trans_unit');
+        if (!$this->authorizationChecker->canCreate()) {
+            return $this->json([
+                'errors' => ['You are not allowed to perform this action']
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
-        $form = $this->createForm('Lexik\Bundle\TranslationBundle\Form\Type\TransUnitType', $handler->createFormData(), $handler->getFormOptions());
+        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
 
         try {
-            if (!$handler->process($form, $request)) {
+            if (!$this->formHandler->process($form, $request)) {
                 return $this->json([
                     'errors' => $form->getErrors(true, false)
                 ], JsonResponse::HTTP_BAD_REQUEST);
@@ -56,21 +121,17 @@ class TranslationController extends Controller {
 
         return $this->json([
             'success' => true,
-            'message' => $this->get('translator')->trans('translations.successfully_added', [], 'LexikTranslationBundle')
+            'message' => $this->translator->trans('translations.successfully_added', [], 'LexikTranslationBundle')
         ]);
     }
 
     public function overviewDataAction() {
-        /** @var StorageInterface $storage */
-        $storage = $this->get('lexik_translation.translation_storage');
-
-        $stats = $this->get('lexik_translation.overview.stats_aggregator')->getStats();
+        $stats = $this->statsAggregator->getStats();
 
         return $this->json([
-            'layout' => $this->container->getParameter('lexik_translation.base_layout'),
-            'locales' => $this->getManagedLocales(),
-            'domains' => $storage->getTransUnitDomains(),
-            'latestTrans' => $storage->getLatestUpdatedAt(),
+            'locales' => $this->localeManager->getLocales(),
+            'domains' => $this->storage->getTransUnitDomains(),
+            'latestTrans' => $this->storage->getLatestUpdatedAt(),
             'stats' => $stats,
         ]);
     }
@@ -79,23 +140,14 @@ class TranslationController extends Controller {
      * Remove cache files for managed locales.
      */
     public function invalidateCacheAction(Request $request) {
-        $this->get('lexik_translation.translator')->removeLocalesCacheFiles($this->getManagedLocales());
+        $this->lexikTranslator->removeLocalesCacheFiles($this->localeManager->getLocales());
 
-        $message = $this->get('translator')->trans('translations.cache_removed', [], 'LexikTranslationBundle');
+        $message = $this->translator->trans('translations.cache_removed', [], 'LexikTranslationBundle');
 
         if ($request->isXmlHttpRequest()) {
             return $this->json(['message' => $message]);
         }
 
         return $this->redirectToRoute('forci_lexik_translation_ui_index');
-    }
-
-    /**
-     * Returns managed locales.
-     *
-     * @return array
-     */
-    protected function getManagedLocales() {
-        return $this->get('lexik_translation.locale.manager')->getLocales();
     }
 }

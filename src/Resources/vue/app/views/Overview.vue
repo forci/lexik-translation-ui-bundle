@@ -10,8 +10,6 @@
         </div>
         <h3>{{ labels.pageTitleOverview }}</h3>
         <hr/>
-        <!--<div class="page-header">-->
-        <!--</div>-->
         <p v-if="dataLoaded" v-text="latestTranslationMessage"></p>
         <div id="translation-overview">
             <div class="row margin-row">

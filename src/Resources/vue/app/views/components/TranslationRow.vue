@@ -1,10 +1,10 @@
 <template>
 
     <tr>
-        <td v-show="columnVisible('id')">
+        <td v-show="columnVisible('id')" :title="translation._id">
             <span>{{ translation._id }}</span>
         </td>
-        <td v-show="columnVisible('domain')">
+        <td v-show="columnVisible('domain')" :title="translation._domain">
             <span>{{ translation._domain }}</span>
         </td>
         <td class="grid-elipsis" v-show="columnVisible('key')" :title="translation._key">
@@ -17,7 +17,7 @@
         </td>
         <td class="grid-elipsis" v-for="locale in locales" v-show="columnVisible(locale)" @dblclick="editField(locale)"
             :title="translatableTitle(locale)">
-            <span v-if="mode !== 'edit'" v-text="translation[locale]">{{ translation[locale] }}</span>
+            <span v-if="mode !== 'edit' || !canEditLocale(locale)" v-text="translation[locale]">{{ translation[locale] }}</span>
             <input type="text"
                    class="form-control input-sm"
                    :ref="'edit-locale-' + locale"
@@ -25,7 +25,7 @@
                    :name="locale"
                    :autofocus="locale === defaultLocale"
                    :value="translation[locale]"
-                   v-if="inputType === 'text'"
+                   v-if="inputType === 'text' && canEditLocale(locale)"
                    v-show="mode === 'edit'"
                    @input="syncField(locale, $event.target.value)"
                    @focus="setDefaultLocale(locale)"
@@ -37,7 +37,7 @@
                 :name="locale"
                 :autofocus="locale === defaultLocale"
                 :value="translation[locale]"
-                v-if="inputType === 'textarea'"
+                v-if="inputType === 'textarea' && canEditLocale(locale)"
                 v-show="mode === 'edit'"
                 @input="syncField(locale, $event.target.value)"
                 @focus="setDefaultLocale(locale)"
@@ -52,16 +52,17 @@
 
         <td class="text-center">
             <div class="actions">
-                <button type="button" class="btn btn-primary btn-sm" v-if="mode === 'read'" @click="toggleMode('edit')">
+                <button type="button" class="btn btn-primary btn-sm" v-if="mode === 'read'" @click="setMode('edit')">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button type="button" class="btn btn-danger btn-sm" v-if="mode === 'read'" @click="toggleMode('delete')">
+                <button type="button" class="btn btn-danger btn-sm" v-if="mode === 'read'" @click="setMode('delete')">
                     <i class="fas fa-trash"></i>
                 </button>
-                <button type="button" class="btn btn-success btn-sm" v-if="mode === 'edit'" @click="save">
+                <button type="button" class="btn btn-success btn-sm" v-if="mode === 'edit'"
+                        @click="save(defaultLocale)">
                     <i class="fas fa-save"></i>
                 </button>
-                <button type="button" class="btn btn-warning btn-sm" v-if="mode !== 'read'" @click="toggleMode('read')">
+                <button type="button" class="btn btn-warning btn-sm" v-if="mode !== 'read'" @click="setMode('read')">
                     <i class="fas fa-ban"></i>
                 </button>
             </div>
@@ -75,7 +76,13 @@
     import * as types from '../../store/mutation-types'
 
     export default {
-        props: ['index', 'translationId', 'labels', 'mode', 'locales', 'defaultLocale', 'columns', 'inputType'],
+        props: ['index', 'translationId', 'labels', 'locales', 'defaultLocale', 'columns', 'inputType'],
+        data() {
+            return {
+                editableLocales: config.editableLocales,
+                mode: 'read'
+            }
+        },
         computed: {
             translation: {
                 get() {
@@ -83,22 +90,29 @@
                 }
             }
         },
-        updated() {
-            if (!this.defaultLocale) {
-                return;
-            }
-
-            if (this.mode !== 'edit') {
-                return;
-            }
-
-            let fields = this.$refs['edit-locale-' + this.defaultLocale];
-
-            if (fields.length > 0) {
-                fields[0].focus();
-            }
-        },
         methods: {
+            focusField() {
+                if (this.mode !== 'edit') {
+                    return;
+                }
+
+                let fields = this.$refs['edit-locale-' + this.defaultLocale];
+
+                if (undefined === fields) {
+                    return;
+                }
+
+                if (fields.length > 0) {
+                    fields[0].focus();
+                }
+            },
+            canEditLocale(locale) {
+                if (this.editableLocales.includes(locale)) {
+                    return true;
+                }
+
+                return false;
+            },
             columnVisible(key) {
                 return this.columns[key];
             },
@@ -111,15 +125,12 @@
                     text: error
                 });
             },
-            toggleMode(mode) {
-                this.$emit('toggleTranslationRow', {
-                    index: this.index,
-                    mode: mode
-                });
+            setMode(mode) {
+                this.mode = mode;
             },
-            editField(locale, event) {
+            editField(locale) {
                 this.setDefaultLocale(locale);
-                this.toggleMode('edit');
+                this.setMode('edit');
             },
             translatableTitle(locale, event) {
                 return this.labels.doubleClickToEdit + ' translation in ' + locale;
@@ -146,12 +157,12 @@
                     translation: this.translation
                 })
                     .then(_ => {
-                        if (locale) {
-                            this.$emit('changeTranslationRow', {
-                                locale: locale,
-                                index: this.index
-                            });
-                        }
+                        this.$emit('changeTranslationRow', {
+                            locale: locale,
+                            index: this.index
+                        });
+
+                        this.setMode('read');
 
                         this.$notify({
                             group: 'translation-grid',
@@ -192,9 +203,7 @@
                     translation: this.translation
                 })
                     .then((id) => {
-                        this.$emit('deleteTranslationRow', {
-                            index: this.index
-                        });
+                        //
                     })
                     .catch((error) => {
                         if (401 === error.response.status) {

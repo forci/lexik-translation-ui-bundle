@@ -53,13 +53,10 @@
                              :locales="locales"
                              :defaultLocale="defaultLocale"
                              :labels="labels"
-                             :mode="modes[index]"
                              :translation-id="translation._id"
                              :columns="columns"
                              :inputType="inputType"
-                             v-on:toggleTranslationRow="onToggleTranslationRow"
                              v-on:changeTranslationRow="onChangeTranslationRow"
-                             v-on:deleteTranslationRow="onDeleteTranslationRow"
                              v-on:setDefaultLocale="onSetDefaultLocale">
             </translation-row>
         </template>
@@ -78,9 +75,8 @@
         props: ['locales', 'labels', 'page', 'columns', 'inputType'],
         data() {
             return {
-                rowInEditMode: 0,
-                rowInDeleteMode: null,
-                defaultLocale: null,
+                currentRow: 0,
+                defaultLocale: config.defaultLocale,
                 currentSort: {
                     sortKey: '_id',
                     order: 'asc'
@@ -92,16 +88,6 @@
             ...mapGetters({
                 translations: 'getAllTranslations'
             }),
-            modes() {
-                let modesArr = Array.apply(null, new Array(this.translations.length)).map(String.prototype.valueOf, "read");
-                if (this.rowInEditMode !== null) {
-                    modesArr[this.rowInEditMode] = 'edit';
-                }
-                if (this.rowInDeleteMode !== null) {
-                    modesArr[this.rowInDeleteMode] = 'delete';
-                }
-                return modesArr;
-            }
         },
         components: {
             TranslationRow
@@ -121,16 +107,18 @@
             },
             sortBy(sortKey) {
                 let order = 'asc';
+
                 if (this.currentSort.sortKey === sortKey) {
                     order = this.currentSort.order === 'asc' ? 'desc' : 'asc';
                 }
 
-                this.$store.dispatch('loadTranslations', {
-                    page: this.page,
-                    sort: sortKey,
-                    order: order,
-                    filter: this.currentSearch
-                })
+                this.$store
+                    .dispatch('loadTranslations', {
+                        page: this.page,
+                        sort: sortKey,
+                        order: order,
+                        filter: this.currentSearch
+                    })
                     .then(_ => {
                         this.$data.currentSort = {
                             sortKey: sortKey,
@@ -144,12 +132,13 @@
             search(key, value) {
                 let filter = Object.assign({}, this.currentSearch, {[key]: value, _search: true});
 
-                this.$store.dispatch('loadTranslations', {
-                    page: this.page,
-                    sort: this.currentSort.sortKey,
-                    order: this.currentSort.order,
-                    filter: filter
-                })
+                this.$store
+                    .dispatch('loadTranslations', {
+                        page: this.page,
+                        sort: this.currentSort.sortKey,
+                        order: this.currentSort.order,
+                        filter: filter
+                    })
                     .then(_ => {
                         this.$data.page = 1;
                         this.$data.currentSort = {
@@ -162,17 +151,28 @@
                         this.showError(error);
                     });
             },
-            onChangeTranslationRow(data) {
+            focusCurrentRow() {
+                let row = this.$refs['translation-row-' + this.$data.currentRow];
+                if (row.length) {
+                    row[0].setMode('edit');
+                    this.$nextTick(function () {
+                        row[0].focusField();
+                    })
+                }
+            },
+            onChangeTranslationRow(data, test) {
                 this.$data.defaultLocale = data.locale;
+
                 // if next row - open
                 if ((data.index + 1) < this.translations.length) {
-                    this.$data.rowInEditMode = data.index + 1;
+                    this.$data.currentRow = data.index + 1;
+                    this.focusCurrentRow();
                     return;
                 }
 
                 // if last page - show toast
                 if (this.$store.getters.pageCount === this.page) {
-                    this.$data.rowInEditMode = null;
+                    this.$data.currentRow = null;
                     window.scrollTo(0, 0);
                     this.$toast(this.$refs.translationTable, this.labels.allDone, 'success', 2000, 100);
                     return;
@@ -186,39 +186,16 @@
                     filter: this.currentSearch
                 })
                     .then(_ => {
-                        this.$data.rowInEditMode = 0;
+                        this.$data.currentRow = 0;
+                        this.focusCurrentRow();
                     })
                     .catch(error => {
                         this.showError(error);
                     });
             },
-            onSetDefaultLocale(data) {
+            onSetDefaultLocale(data, test) {
                 this.$data.defaultLocale = data.locale;
             },
-            onDeleteTranslationRow() {
-                this.$data.rowInDeleteMode = null;
-            },
-            onToggleTranslationRow(data) {
-                switch (data.mode) {
-                    case 'edit':
-                        if (this.rowInEditMode === null || this.rowInEditMode !== data.index) {
-                            this.$data.rowInEditMode = data.index;
-                            return;
-                        }
-                        this.$data.rowInEditMode = null;
-                        break;
-                    case 'delete':
-                        if (this.rowInDeleteMode === null || this.rowInDeleteMode !== data.index) {
-                            this.$data.rowInDeleteMode = data.index;
-                            return;
-                        }
-                        this.$data.rowInDeleteMode = null;
-                        break;
-                    case 'read':
-                        this.$data.rowInEditMode = null;
-                        this.$data.rowInDeleteMode = null;
-                }
-            }
         }
     }
 
