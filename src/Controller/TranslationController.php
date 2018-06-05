@@ -51,9 +51,6 @@ class TranslationController extends AbstractController {
     /** @var TranslationAuthorizationCheckerInterface */
     protected $authorizationChecker;
 
-    /** @var FormFactory */
-    protected $formFactory;
-
     /** @var string */
     protected $defaultLocale;
 
@@ -63,7 +60,7 @@ class TranslationController extends AbstractController {
     public function __construct(
         TransUnitFormHandler $formHandler, LocaleManager $localeManager, StorageInterface $storage,
         StatsAggregator $statsAggregator, TranslatorInterface $translator, Translator $lexikTranslator,
-        TranslationAuthorizationCheckerInterface $authorizationChecker, FormFactory $formFactory,
+        TranslationAuthorizationCheckerInterface $authorizationChecker,
         string $defaultLocale, string $inputType
     ) {
         $this->formHandler = $formHandler;
@@ -73,14 +70,13 @@ class TranslationController extends AbstractController {
         $this->translator = $translator;
         $this->lexikTranslator = $lexikTranslator;
         $this->authorizationChecker = $authorizationChecker;
-        $this->formFactory = $formFactory;
         $this->defaultLocale = $defaultLocale;
         $this->inputType = $inputType;
     }
 
     public function indexAction() {
         // get form for csrf token
-        $form = $this->formFactory->create(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
+        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
 
         $locales = $this->localeManager->getLocales();
 
@@ -110,7 +106,7 @@ class TranslationController extends AbstractController {
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $form = $this->formFactory->create(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
+        $form = $this->createForm(TransUnitType::class, $this->formHandler->createFormData(), $this->formHandler->getFormOptions());
 
         try {
             if (!$this->formHandler->process($form, $request)) {
