@@ -20,7 +20,6 @@
             <argument type="service" id="translator"/>
             <argument type="service" id="lexik_translation.translator"/>
             <argument type="service" id="forci_lexik_translation.translation_authorization_checker"/>
-            <argument type="service" id="form.factory"/>
             <argument>%kernel.default_locale%</argument>
             <argument>%lexik_translation.grid_input_type%</argument>
         </service>
