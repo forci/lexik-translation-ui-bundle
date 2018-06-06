@@ -109,11 +109,7 @@
                 }
             },
             canEditLocale(locale) {
-                if (this.editableLocales.includes(locale)) {
-                    return true;
-                }
-
-                return false;
+                return this.editableLocales.includes(locale);
             },
             columnVisible(key) {
                 return this.columns[key];

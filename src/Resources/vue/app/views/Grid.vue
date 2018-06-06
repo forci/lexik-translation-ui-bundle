@@ -46,7 +46,10 @@
             <div class="row margin-row">
                 <div class="col-md-12">
                     <paginate v-show="pageCount > 1"
+                              :page-range="7"
+                              :margin-pages="4"
                               :pageCount="pageCount"
+                              :first-last-button="true"
                               :clickHandler="setCurrentPage"
                               :prevText="'<<'"
                               :nextText="'>>'"
@@ -68,7 +71,10 @@
                                        :inputType="inputType">
                     </translation-table>
                     <paginate v-show="pageCount > 1"
+                              :page-range="7"
+                              :margin-pages="4"
                               :pageCount="pageCount"
+                              :first-last-button="true"
                               :clickHandler="setCurrentPage"
                               :prevText="'<<'"
                               :nextText="'>>'"
@@ -149,7 +155,7 @@
             initShowHide() {
                 let dynamicProps = {};
                 for (let i = 0; i < config.locales.length; i++) {
-                    dynamicProps[config.locales[i]] = config.locales[i] == config.defaultLocale;
+                    dynamicProps[config.locales[i]] = config.locales[i] === config.defaultLocale;
                 }
 
                 let staticProps = {

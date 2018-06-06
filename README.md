@@ -10,6 +10,12 @@ framework:
         packages:
             forci_lexik_translation_ui:
                 json_manifest_path: "%kernel.root_dir%/../web/bundles/forcilexiktranslationui/build/manifest.json"
+                
+# Optional: 
+forci_lexik_translation_ui:
+    # A Service ID that implements
+    # Forci\Bundle\LexikTranslationUIBundle\Authorization\TranslationAuthorizationCheckerInterface
+    authorization_service: Your\AuthorizationChecker\ServiceId
 ```
 
 Then, make a link somewhere in your app to
