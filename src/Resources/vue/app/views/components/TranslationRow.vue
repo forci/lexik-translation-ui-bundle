@@ -115,8 +115,6 @@
                 return this.columns[key];
             },
             columnEditable(key) {
-                console.log(this.editableColumns[key]);
-                console.log(this.editableColumns);
                 return this.editableColumns[key];
             },
             showError(error) {
