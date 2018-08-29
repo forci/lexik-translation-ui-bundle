@@ -1,3 +1,5 @@
+# Usage
+
 Register the bundle as usual and mount its routing. 
 
 Make sure it is not publicly accessible.
@@ -29,3 +31,4 @@ Then, make a link somewhere in your app to
 # TODO
 - favicon
 - logo
+- Complete rewrite using @vue/cli ~3.0 and bootstrap-vue, taking advantage of better looks and integration, as well as improved codebase
