@@ -32,3 +32,4 @@ Then, make a link somewhere in your app to
 - favicon
 - logo
 - Complete rewrite using @vue/cli ~3.0 and bootstrap-vue, taking advantage of better looks and integration, as well as improved codebase
+- Shift+Enter should edit & open previous row for edit
