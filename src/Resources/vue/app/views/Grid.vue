@@ -68,6 +68,7 @@
                                        :labels="labels"
                                        :page="currentPage"
                                        :columns="showHide"
+                                       :editableColumns="editableLocales"
                                        :inputType="inputType">
                     </translation-table>
                     <paginate v-show="pageCount > 1"
@@ -111,7 +112,9 @@
                 showHideColumnsOn: false,
                 sharedMsg: null,
                 showAll: true,
-                showHide: this.initShowHide()
+                showHide: this.initShowHide(),
+                editableLocales: this.initEditableLocales(),
+
             };
         },
         computed: mapGetters({
@@ -165,6 +168,14 @@
                 };
 
                 return Object.assign({}, dynamicProps, staticProps);
+            },
+            initEditableLocales() {
+                let dynamicProps = {};
+                for (let i = 0; i < config.locales.length; i++) {
+                    dynamicProps[config.locales[i]] = config.locales[i] === config.defaultLocale;
+                }
+
+                return dynamicProps;
             },
             setCurrentPage(page) {
                 this.$store.dispatch('loadTranslations', {page: page});

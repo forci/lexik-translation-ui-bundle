@@ -19,7 +19,7 @@
             @dblclick="editField(locale)"
             @keydown.esc="setMode('read')"
             :title="translatableTitle(locale)">
-            <span v-if="mode !== 'edit' || !canEditLocale(locale)" v-text="translation[locale]">{{ translation[locale] }}</span>
+            <span v-if="mode !== 'edit' || !canEditLocale(locale) || !columnEditable(locale)" v-text="translation[locale]">{{ translation[locale] }}</span>
             <input type="text"
                    class="form-control input-sm"
                    :ref="'edit-locale-' + locale"
@@ -28,7 +28,7 @@
                    :autofocus="locale === defaultLocale"
                    :value="translation[locale]"
                    v-if="inputType === 'text' && canEditLocale(locale)"
-                   v-show="mode === 'edit'"
+                   v-show="mode === 'edit' && columnEditable(locale)"
                    @input="syncField(locale, $event.target.value)"
                    @focus="setDefaultLocale(locale)"
                    @keyup.enter="save(locale)"/>
@@ -40,7 +40,7 @@
                 :autofocus="locale === defaultLocale"
                 :value="translation[locale]"
                 v-if="inputType === 'textarea' && canEditLocale(locale)"
-                v-show="mode === 'edit'"
+                v-show="mode === 'edit' && columnEditable(locale)"
                 @input="syncField(locale, $event.target.value)"
                 @focus="setDefaultLocale(locale)"
                 @keyup="enterInputHandler(locale, $event)">
@@ -78,7 +78,7 @@
     import * as types from '../../store/mutation-types'
 
     export default {
-        props: ['index', 'translationId', 'labels', 'locales', 'defaultLocale', 'columns', 'inputType'],
+        props: ['index', 'translationId', 'labels', 'locales', 'defaultLocale', 'columns', 'editableColumns', 'inputType'],
         data() {
             return {
                 editableLocales: config.editableLocales,
@@ -113,6 +113,11 @@
             },
             columnVisible(key) {
                 return this.columns[key];
+            },
+            columnEditable(key) {
+                console.log(this.editableColumns[key]);
+                console.log(this.editableColumns);
+                return this.editableColumns[key];
             },
             showError(error) {
                 this.$notify({

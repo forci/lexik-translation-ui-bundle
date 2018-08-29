@@ -20,7 +20,11 @@
             </th>
 
             <th class="text-center" v-for="locale in locales" v-show="columnVisible(locale)">
-                {{ locale }}
+                {{ locale }} -
+                <label class="label">
+                    <input type="checkbox" v-model="editableColumns[locale]">
+                    Editable
+                </label>
             </th>
 
             <th></th>
@@ -55,6 +59,7 @@
                              :labels="labels"
                              :translation-id="translation._id"
                              :columns="columns"
+                             :editableColumns="editableColumns"
                              :inputType="inputType"
                              v-on:changeTranslationRow="onChangeTranslationRow"
                              v-on:setDefaultLocale="onSetDefaultLocale">
@@ -72,7 +77,7 @@
     import TranslationRow from './TranslationRow.vue'
 
     export default {
-        props: ['locales', 'labels', 'page', 'columns', 'inputType'],
+        props: ['locales', 'labels', 'page', 'columns', 'editableColumns', 'inputType'],
         data() {
             return {
                 currentRow: 0,
