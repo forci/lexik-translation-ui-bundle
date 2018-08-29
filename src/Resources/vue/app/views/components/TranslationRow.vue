@@ -15,7 +15,7 @@
                 </button>
             </div>
         </td>
-        <td class="grid-elipsis" v-for="locale in locales" v-show="columnVisible(locale)"
+        <td class="" v-for="locale in locales" v-show="columnVisible(locale)"
             @dblclick="editField(locale)"
             @keydown.esc="setMode('read')"
             :title="translatableTitle(locale)">
