@@ -32,4 +32,5 @@ Then, make a link somewhere in your app to
 - favicon
 - logo
 - Complete rewrite using @vue/cli ~3.0 and bootstrap-vue, taking advantage of better looks and integration, as well as improved codebase
+- get rid of manifest, serve static files and do not place a requirement @ symfony asset component and dont enforce usage of a package
 - Shift+Enter should edit & open previous row for edit
