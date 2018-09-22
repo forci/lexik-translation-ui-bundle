@@ -31,3 +31,4 @@ Then, make a link somewhere in your app to
 # TODO
 - favicon
 - logo
+- use vueup or something else for notificationsg
