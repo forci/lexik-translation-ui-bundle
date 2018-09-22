@@ -38,6 +38,7 @@
             <div class="row margin-row">
                 <div class="col-md-12">
                     <b-pagination
+                            limit="7"
                             @input="setCurrentPage"
                             :total-rows="total"
                             v-model="currentPage"
@@ -52,6 +53,7 @@
                                        :inputType="inputType">
                     </translation-table>
                     <b-pagination
+                            limit="7"
                             @input="setCurrentPage"
                             :total-rows="total"
                             v-model="currentPage"

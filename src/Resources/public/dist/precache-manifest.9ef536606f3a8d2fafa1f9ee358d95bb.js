@@ -1,27 +1,27 @@
 self.__precacheManifest = [
   {
-    "revision": "0d38abcb91b2dd56e8babd915233caca",
-    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-solid-900.0d38abcb.eot"
+    "revision": "ba67efc77a5fe272922aebf9d42ad1da",
+    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-solid-900.ba67efc7.ttf"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/bundles/forcilexiktranslationui/dist/robots.txt"
   },
   {
-    "revision": "ba67efc77a5fe272922aebf9d42ad1da",
-    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-solid-900.ba67efc7.ttf"
+    "revision": "0d38abcb91b2dd56e8babd915233caca",
+    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-solid-900.0d38abcb.eot"
   },
   {
     "revision": "5ac8c4fec34fe5e740ab560e4a90240b",
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-brands-400.5ac8c4fe.woff2"
   },
   {
-    "revision": "efe74ddc8e8c7e980e4f0af80a0078e5",
-    "url": "/bundles/forcilexiktranslationui/dist/index.html"
-  },
-  {
     "revision": "f384cdc0b0ee351ae21dc896031c40d6",
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-brands-400.f384cdc0.eot"
+  },
+  {
+    "revision": "8b5814208aeb8878c51e7dcd58eb4a46",
+    "url": "/bundles/forcilexiktranslationui/dist/index.html"
   },
   {
     "revision": "8e04d338e5f3a734136e5fa058f60d0b",
@@ -36,8 +36,8 @@ self.__precacheManifest = [
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-solid-900.68b7c284.woff"
   },
   {
-    "revision": "f52414be0b476b10bb54",
-    "url": "/bundles/forcilexiktranslationui/dist/js/app.36dbc67d.js"
+    "revision": "c0d6e354c31327c24a51",
+    "url": "/bundles/forcilexiktranslationui/dist/js/app.0bddbd69.js"
   },
   {
     "revision": "683aea2d6dbe01d00511266ee839bde4",
@@ -56,12 +56,12 @@ self.__precacheManifest = [
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-regular-400.5cf78fbc.woff"
   },
   {
-    "revision": "a5e47772ae220b65945186a7532411af",
-    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-regular-400.a5e47772.eot"
-  },
-  {
     "revision": "2ed38dbad5ce736060bb41f229eb2dce",
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-regular-400.2ed38dba.ttf"
+  },
+  {
+    "revision": "a5e47772ae220b65945186a7532411af",
+    "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-regular-400.a5e47772.eot"
   },
   {
     "revision": "31b5f53e002d3212b7f1ae50cd1d31dc",
@@ -72,7 +72,7 @@ self.__precacheManifest = [
     "url": "/bundles/forcilexiktranslationui/dist/fonts/fa-brands-400.1dae819a.woff"
   },
   {
-    "revision": "f52414be0b476b10bb54",
+    "revision": "c0d6e354c31327c24a51",
     "url": "/bundles/forcilexiktranslationui/dist/css/app.9e18c118.css"
   }
 ];
