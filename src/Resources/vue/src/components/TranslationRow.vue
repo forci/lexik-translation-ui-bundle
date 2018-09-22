@@ -26,7 +26,7 @@
             :title="translatableTitle(locale)">
             <span v-if="mode !== 'edit' || !canEditLocale(locale) || !columnEditable(locale)"
                   v-text="translation[locale]">{{ translation[locale] }}</span>
-            <input type="text"
+            <b-form-input type="text"
                    class="form-control input-sm"
                    :ref="'edit-locale-' + locale"
                    :key="index + locale"
@@ -35,22 +35,23 @@
                    :value="translation[locale]"
                    v-if="inputType === 'text' && canEditLocale(locale)"
                    v-show="mode === 'edit' && columnEditable(locale)"
-                   @input="syncField(locale, $event.target.value)"
-                   @focus="setDefaultLocale(locale)"
-                   @keyup.enter="save(locale)"/>
-            <textarea
+                   @input.native="syncField(locale, $event.target.value)"
+                   @focus.native="setDefaultLocale(locale)"
+                   @keyup.enter.native="save(locale)"/>
+            <b-form-textarea
                     class="form-control input-sm"
                     :ref="'edit-locale-' + locale"
                     :key="index + locale"
                     :name="locale"
                     :autofocus="locale === defaultLocale"
                     :value="translation[locale]"
+                    rows="4"
                     v-if="inputType === 'textarea' && canEditLocale(locale)"
                     v-show="mode === 'edit' && columnEditable(locale)"
-                    @input="syncField(locale, $event.target.value)"
-                    @focus="setDefaultLocale(locale)"
-                    @keydown.enter="enterInputHandler(locale, $event)">
-            </textarea>
+                    @input.native="syncField(locale, $event.target.value)"
+                    @focus.native="setDefaultLocale(locale)"
+                    @keydown.enter.native="enterInputHandler(locale, $event)">
+            </b-form-textarea>
             <div class="text-center" v-if="mode === 'delete' && translation[locale] !== ''">
                 <b-btn type="button" variant="danger" size="sm" @click="clear(locale)">
                     <i class="fas fa-trash"></i>
@@ -170,10 +171,12 @@
                 return this.labels.doubleClickToEdit + ' translation in ' + locale;
             },
             syncField(field, value) {
+                console.log(arguments)
                 let id = this.translationId;
                 this.$store.commit('translations/' + types.TRANSLATION_SYNC, {id, field, value});
             },
             setDefaultLocale(locale) {
+                console.log('def loc')
                 this.$emit('setDefaultLocale', {
                     locale: locale,
                     index: this.index

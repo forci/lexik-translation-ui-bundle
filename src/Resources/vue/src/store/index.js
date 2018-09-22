@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as actions from './actions'
 import config from './modules/config'
 import descriptions from './modules/descriptions'
 import statistics from './modules/statistics'
@@ -12,8 +11,6 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
-    actions,
-    // getters,
     modules: {
         config,
         descriptions,

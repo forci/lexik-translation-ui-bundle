@@ -1,0 +1,15 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="Sample\App\Controller\IndexController">
+            <argument type="service" id="twig"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="Sample\App\Translation\AuthorizationChecker"/>
+
+    </services>
+</container>

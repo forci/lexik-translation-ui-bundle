@@ -1,0 +1,11 @@
+provider_search:
+    resource: "@App/Resources/config/routing.yml"
+    prefix: /
+
+forci_lexik_ui:
+    resource: "@ForciLexikTranslationUIBundle/Resources/config/routing.yml"
+    prefix:   /ui/forci
+
+lexik_ui:
+    resource: "@LexikTranslationBundle/Resources/config/routing.yml"
+    prefix:   /ui/lexik

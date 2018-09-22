@@ -79,6 +79,9 @@ class RestController extends AbstractController {
     /** @var string */
     protected $inputType;
 
+    /** @var int */
+    protected $perPage;
+
     public function __construct(
         DataGridRequestHandler $requestHandler, DataGridFormatter $gridFormatter, StorageInterface $storage,
         TransUnitManager $transUnitManager, LocaleManager $localeManager,
@@ -86,7 +89,7 @@ class RestController extends AbstractController {
         DescriptionCollection $descriptions, StatsAggregator $statsAggregator,
         TransUnitFormHandler $formHandler, Router $router,
         TranslatorInterface $translator, Translator $lexikTranslator,
-        string $defaultLocale, string $inputType
+        string $defaultLocale, string $inputType, int $perPage
     ) {
         $this->requestHandler = $requestHandler;
         $this->gridFormatter = $gridFormatter;
@@ -102,6 +105,7 @@ class RestController extends AbstractController {
         $this->lexikTranslator = $lexikTranslator;
         $this->defaultLocale = $defaultLocale;
         $this->inputType = $inputType;
+        $this->perPage = $perPage;
     }
 
     /**
@@ -239,7 +243,7 @@ class RestController extends AbstractController {
             'domains' => array_unique(array_merge(['messages'], $this->formHandler->getFormOptions()['domains'])),
             'inputType' => $this->inputType,
             'transUnitToken' => $form->createView()->children['_token']->vars['value'],
-            'recordsPerPage' => 20,
+            'recordsPerPage' => $this->perPage,
             'canCreate' => $this->authorizationChecker->canCreate(),
             'labels' => [
                 'hideCol' => $this->translator->trans('translations.show_hide_columns', [], 'LexikTranslationBundle'),

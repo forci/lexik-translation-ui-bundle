@@ -37,24 +37,12 @@
 
             <div class="row margin-row">
                 <div class="col-md-12">
-                    <paginate v-show="pageCount > 1"
-                              :page-range="7"
-                              :margin-pages="4"
-                              :pageCount="pageCount"
-                              :first-last-button="true"
-                              :clickHandler="setCurrentPage"
-                              :prevText="'<<'"
-                              :nextText="'>>'"
-                              :force-page="currentPage - 1"
-                              :initialPage="currentPage - 1"
-                              :container-class="'pagination'"
-                              :page-class="'page-item'"
-                              :page-link-class="'page-link'"
-                              :prev-class="'page-item'"
-                              :prev-link-class="'page-link'"
-                              :next-class="'page-item'"
-                              :next-link-class="'page-link'">
-                    </paginate>
+                    <b-pagination
+                            @input="setCurrentPage"
+                            :total-rows="total"
+                            v-model="currentPage"
+                            :per-page="recordsPerPage">
+                    </b-pagination>
                     <translation-table :ref="'translation-table'"
                                        :locales="locales"
                                        :labels="labels"
@@ -63,24 +51,12 @@
                                        :editableColumns="editableLocales"
                                        :inputType="inputType">
                     </translation-table>
-                    <paginate v-show="pageCount > 1"
-                              :page-range="7"
-                              :margin-pages="4"
-                              :pageCount="pageCount"
-                              :first-last-button="true"
-                              :clickHandler="setCurrentPage"
-                              :prevText="'<<'"
-                              :nextText="'>>'"
-                              :force-page="currentPage - 1"
-                              :initialPage="currentPage - 1"
-                              :container-class="'pagination'"
-                              :page-class="'page-item'"
-                              :page-link-class="'page-link'"
-                              :prev-class="'page-item'"
-                              :prev-link-class="'page-link'"
-                              :next-class="'page-item'"
-                              :next-link-class="'page-link'">
-                    </paginate>
+                    <b-pagination
+                            @input="setCurrentPage"
+                            :total-rows="total"
+                            v-model="currentPage"
+                            :per-page="recordsPerPage">
+                    </b-pagination>
                 </div>
             </div>
         </div>
@@ -91,7 +67,6 @@
 <script>
 
     import {mapGetters} from 'vuex'
-    import Paginate from 'vuejs-paginate'
     import TranslationTable from '../components/TranslationTable.vue';
 
     export default {
@@ -104,6 +79,7 @@
                 showHide: null,
                 editableLocales: null,
                 mounted: false,
+                currentPage: 1
             };
         },
         computed: {
@@ -111,17 +87,23 @@
                 locales: 'locales',
                 labels: 'labels',
                 inputType: 'inputType',
+                recordsPerPage: 'recordsPerPage',
                 defaultLocale: 'defaultLocale',
             }),
             ...mapGetters('translations', {
                 total: 'total',
                 pageCount: 'pageCount',
-                currentPage: 'currentPage'
+                translationsPage: 'currentPage'
             }),
         },
+        watch: {
+            translationsPage(newVal) {
+                // Keeps Pagination up to date when editing skips to the next page
+                this.currentPage = newVal;
+            }
+        },
         components: {
-            TranslationTable,
-            Paginate
+            TranslationTable
         },
         mounted() {
             this.showHide = this.initShowHide()
@@ -179,7 +161,6 @@
             },
             setCurrentPage(page) {
                 this.$store.dispatch('translations/load', {page: page});
-                console.log(page)
             }
         }
     }

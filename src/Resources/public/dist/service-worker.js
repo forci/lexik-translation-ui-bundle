@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js");
 
 importScripts(
-  "/bundles/forcilexiktranslationui/dist/precache-manifest.8d09410c63c464d393382c702347db60.js"
+  "/bundles/forcilexiktranslationui/dist/precache-manifest.56dbde96ec3dceef4985ceeb74fc35d5.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "vue-new"});

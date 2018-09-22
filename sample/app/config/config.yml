@@ -1,0 +1,57 @@
+parameters:
+    forci_lexik_translation_ui.config.per_page: 2
+
+framework:
+    default_locale:  en
+    secret:          'gdgfdsgfsd'
+    router:
+        resource: "%kernel.root_dir%/../app/config/routing.yml"
+        strict_requirements: '%kernel.debug%'
+    form:            true
+    csrf_protection: true
+    session: ~
+
+twig:
+    debug:            '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: pdo_sqlite
+                path: '%kernel.cache_dir%/database.db'
+                charset: UTF8
+    orm:
+        entity_managers:
+            default:
+                connection: default
+                #                naming_strategy: doctrine.orm.naming_strategy.underscore
+                metadata_cache_driver: array
+                query_cache_driver: array
+                result_cache_driver: array
+                mappings:
+                    LexikTranslationBundle: ~
+
+lexik_translation:
+    #    grid_input_type: text|textarea # toggle to test
+    grid_input_type: textarea
+    resources_registration:
+        type:                 all  # all | files | database
+        managed_locales_only: true
+    fallback_locale: ['%kernel.default_locale%']         # (required) default locale(s) to use
+    managed_locales: # (required) locales that the bundle has to manage
+        - en
+        - bg
+        - de
+    storage:
+        # orm | mongodb | propel
+        type: orm
+        # The name of the entity / document manager which uses different connection (see: http://symfony.com/doc/current/cookbook/doctrine/multiple_entity_managers.html)
+        # When using propel, this can be used to specify the propel connection name
+        object_manager: default
+
+forci_lexik_translation_ui:
+    authorization_service: Sample\App\Translation\AuthorizationChecker
+    description_files:
+    - '%kernel.root_dir%/../src/App/Resources/translations_descriptions.yml'

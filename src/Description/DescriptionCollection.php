@@ -31,8 +31,26 @@ class DescriptionCollection {
             return;
         }
 
+        /** @var string $file */
         foreach ($this->files as $file) {
-            $this->descriptions = array_merge($this->descriptions, Yaml::parseFile($file));
+            if (!file_exists($file)) {
+                throw new \RuntimeException(sprintf(
+                    'Descriptions file %s does not exist',
+                    $file
+                ));
+            }
+
+            $descriptions = Yaml::parseFile($file);
+
+            if (!is_array($descriptions)) {
+
+                throw new \RuntimeException(sprintf(
+                    'Descriptions file %s should contain an array if key:value pairs',
+                    $file
+                ));
+            }
+
+            $this->descriptions = array_merge($this->descriptions, $descriptions);
         }
     }
 

@@ -2,6 +2,7 @@ import { deepCopy } from './Util'
 
 export default function createLogger ({
                                           collapsed = true,
+                                          // eslint-disable-next-line
                                           filter = (mutation, stateBefore, stateAfter) => true,
                                           transformer = state => state,
                                           mutationTransformer = mut => mut,

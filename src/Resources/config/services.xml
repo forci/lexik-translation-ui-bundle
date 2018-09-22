@@ -1,9 +1,13 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="forci_lexik_translation_ui.config.per_page">20</parameter>
+    </parameters>
+
     <services>
 
-        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\RestController" autowire="true">
+        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\RestController" autowire="true" public="true">
             <argument type="service" id="lexik_translation.data_grid.request_handler"/>
             <argument type="service" id="lexik_translation.data_grid.formatter"/>
             <argument type="service" id="lexik_translation.translation_storage"/>
@@ -18,21 +22,14 @@
             <argument type="service" id="lexik_translation.translator"/>
             <argument>%kernel.default_locale%</argument>
             <argument>%lexik_translation.grid_input_type%</argument>
+            <argument>%forci_lexik_translation_ui.config.per_page%</argument>
         </service>
 
-        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController" autowire="true">
-            <argument type="service" id="lexik_translation.form.handler.trans_unit"/>
-            <argument type="service" id="lexik_translation.locale.manager"/>
-            <argument type="service" id="lexik_translation.translation_storage"/>
-            <argument type="service" id="lexik_translation.overview.stats_aggregator"/>
-            <argument type="service" id="translator"/>
-            <argument type="service" id="lexik_translation.translator"/>
-            <argument type="service" id="forci_lexik_translation.translation_authorization_checker"/>
-            <argument>%kernel.default_locale%</argument>
-            <argument>%lexik_translation.grid_input_type%</argument>
-        </service>
+        <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController" autowire="true"
+                 public="true"/>
 
-        <service id="forci_lexik_translation.translation_authorization_checker" class="Forci\Bundle\LexikTranslationUIBundle\Authorization\FreeAuthorizationChecker"/>
+        <service id="forci_lexik_translation.translation_authorization_checker"
+                 class="Forci\Bundle\LexikTranslationUIBundle\Authorization\FreeAuthorizationChecker"/>
 
         <service id="Forci\Bundle\LexikTranslationUIBundle\Description\DescriptionCollection"/>
 

@@ -39,7 +39,7 @@ class RequestParametersTransformer {
         }
 
         return fd;
-    };
+    }
 }
 
 export default RequestParametersTransformer

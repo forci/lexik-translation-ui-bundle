@@ -8,7 +8,9 @@ module.exports = {
     devServer: {
         proxy: {
             '/api': {
-                target: 'https://your.host/app_dev.php/your/routing/to/bundle/index',
+                // When running the sample bundle, if you would like to play with the User Interface
+                // This will proxy API requests to the Symfony web server started with server:start
+                target: 'http://127.0.0.1:8000/ui/forci',
                 changeOrigin: true,
                 secure: false
             },

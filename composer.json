@@ -25,10 +25,21 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.8",
-        "wucdbm/php-cs-fixers": "~0.1"
+        "wucdbm/php-cs-fixers": "~0.1",
+        "twig/twig": "~2.0",
+        "symfony/debug-bundle": "~4.0",
+        "symfony/web-profiler-bundle": "~4.0",
+        "doctrine/doctrine-bundle": "~1.9",
+        "symfony/twig-bundle": "~4.1.4",
+        "doctrine/orm": "~2.6",
+        "symfony/web-server-bundle": "^4.1",
+        "symfony/security-csrf": "^4.1"
     },
     "autoload": {
         "psr-4": { "Forci\\Bundle\\LexikTranslationUIBundle\\": "src" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Sample\\": "sample/src" }
     },
     "config": {
         "bin-dir": "bin"
