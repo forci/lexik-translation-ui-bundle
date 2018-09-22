@@ -10,6 +10,14 @@
             <argument type="service" id="lexik_translation.trans_unit.manager"/>
             <argument type="service" id="lexik_translation.locale.manager"/>
             <argument type="service" id="forci_lexik_translation.translation_authorization_checker"/>
+            <argument type="service" id="Forci\Bundle\LexikTranslationUIBundle\Description\DescriptionCollection"/>
+            <argument type="service" id="lexik_translation.overview.stats_aggregator"/>
+            <argument type="service" id="lexik_translation.form.handler.trans_unit"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="lexik_translation.translator"/>
+            <argument>%kernel.default_locale%</argument>
+            <argument>%lexik_translation.grid_input_type%</argument>
         </service>
 
         <service id="Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController" autowire="true">
@@ -25,6 +33,8 @@
         </service>
 
         <service id="forci_lexik_translation.translation_authorization_checker" class="Forci\Bundle\LexikTranslationUIBundle\Authorization\FreeAuthorizationChecker"/>
+
+        <service id="Forci\Bundle\LexikTranslationUIBundle\Description\DescriptionCollection"/>
 
     </services>
 

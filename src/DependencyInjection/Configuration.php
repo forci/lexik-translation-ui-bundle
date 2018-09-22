@@ -26,6 +26,9 @@ class Configuration implements ConfigurationInterface {
         $rootNode
             ->children()
                 ->scalarNode('authorization_service')->defaultNull()->end()
+                ->arrayNode('description_files')
+                    ->scalarPrototype()->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

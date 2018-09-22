@@ -31,6 +31,7 @@ class ForciLexikTranslationUIExtension extends Extension {
         $loader->load('services.xml');
 
         $container->setParameter('forci_lexik_translation_ui.authorization_service_id', $config['authorization_service']);
+        $container->setParameter('forci_lexik_translation_ui.description_files', $config['description_files']);
     }
 
     /**

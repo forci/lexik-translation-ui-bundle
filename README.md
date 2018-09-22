@@ -2,22 +2,22 @@
 
 Register the bundle as usual and mount its routing. 
 
-Make sure it is not publicly accessible.
-
-You need to add the following to your asset packages configuration:
+!! Make sure it is not publicly accessible.
 
 ```yaml
-framework:
-    assets:
-        packages:
-            forci_lexik_translation_ui:
-                json_manifest_path: "%kernel.root_dir%/../web/bundles/forcilexiktranslationui/build/manifest.json"
-                
-# Optional: 
 forci_lexik_translation_ui:
     # A Service ID that implements
     # Forci\Bundle\LexikTranslationUIBundle\Authorization\TranslationAuthorizationCheckerInterface
+    # Optional
     authorization_service: Your\AuthorizationChecker\ServiceId
+    # Optional
+    description_files:
+        - '%kernel.root_dir%/../src/App/Resources/translations_descriptions.yml'
+```
+
+```yaml
+# translations_descriptions.yml
+some.translation.key: Some descriptive text to be displayed inside the UI
 ```
 
 Then, make a link somewhere in your app to
@@ -31,6 +31,3 @@ Then, make a link somewhere in your app to
 # TODO
 - favicon
 - logo
-- Complete rewrite using @vue/cli ~3.0 and bootstrap-vue, taking advantage of better looks and integration, as well as improved codebase
-- get rid of manifest, serve static files and do not place a requirement @ symfony asset component and dont enforce usage of a package
-- Shift+Enter should edit & open previous row for edit

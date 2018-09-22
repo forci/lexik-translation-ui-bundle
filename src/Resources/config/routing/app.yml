@@ -1,19 +1,4 @@
 forci_lexik_translation_ui_index:
     path:     /
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController::indexAction }
-    methods:  [GET]
-
-forci_lexik_translation_ui_overview_data:
-    path:     /overview
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController::overviewDataAction }
-    methods:  [GET]
-
-forci_lexik_translation_ui_create:
-    path:     /create
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController::createAction }
-    methods:  [GET, POST]
-
-forci_lexik_translation_ui_invalidate_cache:
-    path:     /invalidate-cache
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController::invalidateCacheAction }
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\TranslationController:indexAction
     methods:  [GET]

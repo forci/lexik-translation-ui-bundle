@@ -1,24 +1,49 @@
 forci_lexik_translation_ui_list:
     path:     /translations
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController::listAction }
+    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:listAction }
     methods:  [GET]
 
 forci_lexik_translation_ui_profiler:
     path:     /translations/profiler/{token}
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController::listByProfileAction }
+    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:listByProfileAction }
     methods:  [GET]
 
 forci_lexik_translation_ui_update:
     path:     /translations/{id}
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController::updateAction }
+    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:updateAction }
     methods:  [PUT]
 
 forci_lexik_translation_ui_delete_locale:
     path:     /translations/{id}/{locale}
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController::deleteTranslationAction }
+    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:deleteTranslationAction }
     methods:  [DELETE]
 
 forci_lexik_translation_ui_delete:
     path:     /translations/{id}
-    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController::deleteAction }
+    defaults: { _controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:deleteAction }
     methods:  [DELETE]
+
+forci_lexik_translation_ui_descriptions:
+    path:     /descriptions
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:descriptionsAction
+    methods:  [GET]
+
+forci_lexik_translation_ui_config:
+    path:     /config
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:configAction
+    methods:  [GET]
+
+forci_lexik_translation_ui_overview_data:
+    path:     /overview
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:overviewDataAction
+    methods:  [GET]
+
+forci_lexik_translation_ui_create:
+    path:     /create
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:createAction
+    methods:  [GET, POST]
+
+forci_lexik_translation_ui_invalidate_cache:
+    path:     /invalidate-cache
+    controller: Forci\Bundle\LexikTranslationUIBundle\Controller\RestController:invalidateCacheAction
+    methods:  [GET]
